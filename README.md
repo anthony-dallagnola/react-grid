@@ -5,7 +5,7 @@ This component was built for myself as I didn't find any grid component I liked 
 npm install -S react-cell-grid
 
 ## Preview
-![alt text](https://raw.githubusercontent.com/anthony-dallagnola/react-grid/master/public/preview.png)
+![Preview image](https://github.com/anthony-dallagnola/react-grid/blob/master/public/preview.png)
 
 ## Data 
 ### Headers
