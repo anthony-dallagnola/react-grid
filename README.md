@@ -2,8 +2,10 @@
 This component was built for myself as I didn't find any grid component I liked for free. I'm putting it here so it may help others. It is gonna be very basic at first but I will try adding new functionalities along the way. Feel free to ask if you have some needs on your own that I could add.
 
 ## Installation
-npm install -S react-grid
+npm install -S react-cell-grid
 
+## Preview
+![alt text](https://raw.githubusercontent.com/anthony-dallagnola/react-grid/master/public/preview.png)
 
 ## Data 
 ### Headers
