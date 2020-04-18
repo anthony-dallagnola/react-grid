@@ -1,0 +1,71 @@
+{
+  "name": "react-cell-grid",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/Grid.js",
+  "module": "dist/Grid.js",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anthony-dallagnola/react-grid.git"
+  },
+  "scripts": {
+    "start:simple": "parcel './src/examples/simple/index.html' -p 4001",
+    "start:multiple": "parcel './src/examples/multiple headers/index.html' -p 4001",
+    "test": "jest",
+    "test:watch": "jest --watchAll",
+    "test:coverage": "jest --collect-coverage",
+    "lint": "eslint src/**/*.tsx",
+    "build": "rm -rf dist && NODE_ENV=production babel src/lib --extensions '.tsx' --out-dir dist --copy-files",
+    "//build": "rm -rf dist && NODE_ENV=production babel src/lib --extensions '.tsx' --out-dir dist --copy-files --ignore __tests__,spec.js,test.js,__snapshots__",
+    "check-types": "tsc"
+  },
+  "keywords": [],
+  "author": {
+    "name": "Anthony DALL'AGNOLA-BOMIER",
+    "email": "anthony.dallagnola@gmail.com"
+  },
+  "license": "MIT",
+  "peerDependencies": {
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/plugin-proposal-object-rest-spread": "^7.9.5",
+    "@babel/preset-typescript": "^7.9.0",
+    "@types/enzyme": "^3.10.5",
+    "@types/enzyme-adapter-react-16": "^1.0.6",
+    "@types/eslint": "^6.8.0",
+    "@types/jest": "^25.2.1",
+    "@types/react": "^16.9.34",
+    "@types/react-dom": "^16.9.6",
+    "@typescript-eslint/eslint-plugin": "^2.28.0",
+    "@typescript-eslint/parser": "^2.28.0",
+    "autoprefixer": "^9.7.6",
+    "babel-plugin-react-css-modules": "^5.2.6",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-react-app": "^9.1.2",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.2",
+    "eslint": "^6.8.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-plugin-react": "^7.19.0",
+    "jest": "^25.3.0",
+    "node-sass": "^4.13.1",
+    "parcel-bundler": "^1.12.4",
+    "postcss-modules": "^1.5.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "sass": "^1.26.3",
+    "sass-jest": "^0.1.7",
+    "ts-jest": "^25.4.0",
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {}
+}

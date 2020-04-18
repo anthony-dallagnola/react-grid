@@ -1,0 +1,42 @@
+$grid-border-size: 2px;
+$grid-border-color: black;
+
+.react-cell-grid-container {
+  margin: auto;
+  border: $grid-border-size $grid-border-color solid;
+}
+
+.react-cell-grid-container .react-cell-grid-row div, .react-cell-grid-container .react-cell-grid-header div {
+  border-right: $grid-border-size $grid-border-color solid;
+}
+
+.react-cell-grid-container .react-cell-grid-row div:last-child, .react-cell-grid-container .react-cell-grid-header div:last-child {
+  border: 0;
+}
+
+.react-cell-grid-row, .react-cell-grid-header {
+  display: flex;
+  border-bottom: $grid-border-size $grid-border-color solid;
+}
+
+.react-cell-grid-row:last-child {
+  border: 0;
+}
+
+.react-cell-grid-row:nth-child(2n) {
+    background-color: lightgray;
+}
+
+.react-cell-grid-header-cell {
+  text-align: center;
+}
+
+.react-cell-grid-cell {
+  font-size: 12px;
+  display: inline-block;
+}
+
+.react-cell-grid-data-cell div {
+  margin: 2px 5px;
+  word-wrap: break-word;
+}
