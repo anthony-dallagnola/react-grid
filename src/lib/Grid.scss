@@ -19,6 +19,10 @@ $grid-border-color: black;
   border-bottom: $grid-border-size $grid-border-color solid;
 }
 
+.react-cell-grid-header-cell div:first-child {
+  border: 0;
+}
+
 .react-cell-grid-row:last-child {
   border: 0;
 }
@@ -29,6 +33,8 @@ $grid-border-color: black;
 
 .react-cell-grid-header-cell {
   text-align: center;
+  position: relative;
+  line-height: 20px;
 }
 
 .react-cell-grid-cell {

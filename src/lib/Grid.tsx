@@ -1,8 +1,8 @@
-// import * as React from 'react';
-import React, {useState} from 'react';
-import './Grid.scss';
+import React, {useState, useEffect} from 'react';
 import { isPrimitive } from './utils/functions';
 import { ERRORS, PREFIX } from './utils/constants';
+import { Primitive } from './models/Primitive';
+import './Grid.scss';
 
 const logger: any = {};
 const Grid = (props: any): JSX.Element => {
@@ -15,10 +15,12 @@ const Grid = (props: any): JSX.Element => {
 
   const [ready, setReady] = useState(false);
   const headers = props.headers;
-  const data = props.data;
+  const [isSingleRowHeader, setIsSingleHeader] = useState<boolean>();
+  const [data, setData] = useState(props.data);
   const [weights, setWeights] = useState<number[]>(props.weights ? props.weights : []);
   const [weightsSum, setWeightsSum] = useState<number>(0);
 
+  console.log('Data init: ', data);
 
   if (!ready) {
     logger.log('headers: ', headers);
@@ -30,15 +32,16 @@ const Grid = (props: any): JSX.Element => {
       return <div>{ERRORS.HEADER.EMPTY}</div>;
     }
     let numberColumns = 0;
-    let isSingleRowHeader = null;
+    // let isSingleRowHeader = null;
 
     for (const header of headers) {
       const isHeaderPrimitive = isPrimitive(header);
       if (!isHeaderPrimitive && !Array.isArray(header)) {
         return <div>{ERRORS.HEADER.INVALID_FORMAT}</div>;
       }
-      if (isSingleRowHeader === null) {
-        isSingleRowHeader = isHeaderPrimitive;
+      if (typeof isSingleRowHeader === 'undefined') {
+        // isSingleRowHeader = isHeaderPrimitive;
+        setIsSingleHeader(isHeaderPrimitive);
       }
       if (isSingleRowHeader !== isHeaderPrimitive) {
         return <div>{ERRORS.HEADER.MIXING_SINGLE_AND_DOUBLE}</div>;
@@ -46,7 +49,7 @@ const Grid = (props: any): JSX.Element => {
       if (isHeaderPrimitive) {
         numberColumns++;
       } else if (Array.isArray(header) && header.length === 2 && isPrimitive(header[0]) && Array.isArray(header[1])) {
-        numberColumns+=header[1].length;
+        numberColumns += header[1].length;
       } else {
         return <div>{ERRORS.HEADER.INVALID_FORMAT}</div>;
       }
@@ -81,6 +84,7 @@ const Grid = (props: any): JSX.Element => {
     // headers.length is wrong for double header
     if (weights.length === 0) {
       setWeights(Array(numberColumns).fill(0, 0).map(() => 1));
+      return <></>;
     } else if (weights.length !== numberColumns) {
       return <div>{ERRORS.WEIGHTS.LENGTH}</div>;
     } else {
@@ -96,7 +100,6 @@ const Grid = (props: any): JSX.Element => {
     setReady(true);
   }
 
-
   const getWidthFromIndex = (index: number) => {
     return getWidth(weights[index]);
   };
@@ -105,12 +108,9 @@ const Grid = (props: any): JSX.Element => {
     return 'calc(' + (weight / weightsSum * 100) + '% - 2px';
   };
 
-  // if (!ready) {
-  //   return <div>Loading</div>;
-  // }
-
   return (
     <>
+      {logger.log('Refresh rendering Data init: ', data)}
       <div className='react-cell-grid-container'>
         {/* Header(s) */}
         {(() => {
@@ -124,12 +124,15 @@ const Grid = (props: any): JSX.Element => {
             for (let i = 0; i < headers.length; i++) {
               let weight = 0;
               for (let j = 0; j < headers[i][1].length; j++) {
-                headersRowTemp.push(<div key={headers[i][1][j]+'_'+i+'_'+j} className='react-cell-grid-cell react-cell-grid-header-cell' style={{ width: getWidthFromIndex(weightIndex) }}>
-                  {headers[i][1][j]}
-                </div>);
+                headersRowTemp.push(
+                  <div key={headers[i][1][j]+'_'+i+'_'+j} className='react-cell-grid-cell react-cell-grid-header-cell' style={{ width: getWidthFromIndex(weightIndex) }}>
+                    {headers[i][1][j]}
+                  </div>);
                 weight += weights[weightIndex++];
               }
-              topHeadersRow.push(<div key={headers[i][0]+'_'+i} className='react-cell-grid-cell react-cell-grid-header-cell' style={{ width: getWidth(weight) }}>{headers[i][0]}</div>);
+              topHeadersRow.push(
+                <div key={headers[i][0]+'_'+i} className='react-cell-grid-cell react-cell-grid-header-cell' style={{ width: getWidth(weight) }}>{headers[i][0]}
+                </div>);
             }
             result = <>
               <div key={'header_0'} className='react-cell-grid-header'>{topHeadersRow}</div>
@@ -138,7 +141,9 @@ const Grid = (props: any): JSX.Element => {
           } else {
             // single header
             for (let i = 0; i < headers.length; i++) {
-              headersRow.push(<div key={headers[i]} className='react-cell-grid-cell react-cell-grid-header-cell' style={{ width: getWidthFromIndex(i) }}>{headers[i]}</div>);
+              headersRow.push(<div key={headers[i]} className='react-cell-grid-cell react-cell-grid-header-cell' style={{ width: getWidthFromIndex(i) }}>
+                <div>{headers[i]}</div>
+              </div>);
             }
             result = <div className='react-cell-grid-header'>{headersRow}</div>;
           }
@@ -147,8 +152,10 @@ const Grid = (props: any): JSX.Element => {
         {/* Rows */}
         <div className='react-cell-grid-rows'>
           {(() => {
+            logger.log('data rendering');
             const dataRows = [];
             for (let i = 0; i < data.length; i++) {
+              logger.log('data rendering [', i, ']: ', data[i]);
               dataRows.push(<div key={'row_'+i} className='react-cell-grid-row'>{(() => {
                 const dataRow = [];
                 for (let j = 0; j < data[i].length; j++) {

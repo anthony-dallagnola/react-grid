@@ -1,9 +1,8 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import Grid from '../../lib/Grid';
+import Grid from '../../../src/lib/Grid';
 
 import dataJson from './data.json';
-
 
 const cols = dataJson.cols;
 const headers = [

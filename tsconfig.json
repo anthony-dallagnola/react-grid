@@ -1,10 +1,12 @@
 {
+  "compileOnSave": false,
   "compilerOptions": {
     /* Specify ECMAScript target version */
-    "target": "es5",
+    "target": "es2016",
     /* Specify module code generation */
     "module": "esnext",
     /* Specify library files to be included in the compilation. */
+
     "lib": [
       "ESNext",
       "DOM"
@@ -13,6 +15,7 @@
     "jsx": "react",
     /* Generate corresponding .map files */
     "sourceMap": true,
+    "declaration": true,
     /* Enable all strict type-checking options */
     "strict": true,
     /* Specify module resolution strategy */
@@ -33,13 +36,24 @@
     "allowSyntheticDefaultImports": true,
     /*  Emit interop between CommonJS and ES modules */
     "esModuleInterop": true,
+
+    // "noImplicitAny": true,
+    // "noUnusedLocals": true,
+    // "noUnusedParameters": true,
+    // "removeComments": false,
+    // "preserveConstEnums": true,
+    "skipLibCheck": true
   },
   "include": [
-    "src/**/*"
+    "./src/**/*"
   ],
   "parserOptions": {
     "ecmaFeatures": {
       "jsx": true
     }
-  }
+  },
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }
