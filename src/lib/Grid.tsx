@@ -2,7 +2,12 @@ import React, {useState, useEffect} from 'react';
 import { isPrimitive } from './utils/functions';
 import { ERRORS, PREFIX } from './utils/constants';
 import { Primitive } from './models/Primitive';
+import sortUpIcon from './assets/sort-up.svg';
+import sortDownIcon from './assets/sort-down.svg';
+import sortBothIcon from './assets/sort-both.svg';
+import { Sort } from './models/enums/Sort.enum';
 import './Grid.scss';
+import { DataCell } from './models/DataCell';
 
 const logger: any = {};
 const Grid = (props: any): JSX.Element => {
@@ -14,13 +19,127 @@ const Grid = (props: any): JSX.Element => {
   }
 
   const [ready, setReady] = useState(false);
-  const headers = props.headers;
+  const [headers, setHeaders] = useState(props.headers);
   const [isSingleRowHeader, setIsSingleHeader] = useState<boolean>();
   const [data, setData] = useState(props.data);
   const [weights, setWeights] = useState<number[]>(props.weights ? props.weights : []);
   const [weightsSum, setWeightsSum] = useState<number>(0);
+  const [sort, setSort] = useState(props.defaultSort ? props.defaultSort : {});
 
-  console.log('Data init: ', data);
+  useEffect(() => {
+    // if (sortData) {
+    sortData();
+    // }
+  }, [sort]);
+
+  useEffect(() => {
+    setHeaders(props.headers);
+    setData(props.data);
+    setWeights(props.weights ? props.weights : []);
+    setSort(props.defaultSort ? props.defaultSort : {});
+    setReady(false);
+  }, [props]);
+
+  logger.log('Data init: ', data);
+  logger.log('Data init: ', props.data);
+
+
+  const extractValue = (cell: Primitive | DataCell) => {
+    if (isPrimitive(cell)) {
+      if (typeof cell === 'string') {
+        return String(cell).toLowerCase();
+      } else {
+        return cell;
+      }
+    } else {
+      if (typeof cell === 'string') {
+        return String((cell as DataCell).value).toLowerCase();
+      } else {
+        return (cell as DataCell).value;
+      }
+    }
+  };
+
+  const sortData = () => {
+    logger.log('sort data: ', sort);
+    if (typeof sort.name === 'undefined' || typeof sort.type === 'undefined') {
+      return;
+    }
+    // get column number
+    let index = 0;
+    if (isSingleRowHeader) {
+      for (let i = 0; i < headers.length; i++) {
+        if (headers[i] === sort.name) {
+          break;
+        }
+        index++;
+      }
+    } else {
+      let found = false;
+      for (let i = 0; i < headers.length; i++) {
+        console.log('length i: ', headers.length);
+        for (let j = 0; j < headers[i][1].length; j++) {
+          console.log('length j: ', headers[i][1].length);
+          if (headers[i][1][j] === sort.name) {
+            found = true;
+            break;
+          }
+          index++;
+        }
+        if (found) break;
+      }
+    }
+    logger.log('column: ', index);
+    // TODO check if index exceeds length
+    if (sort.type === Sort.Both) {
+      setData([].concat(props.data));
+    } else {
+      console.log('sort: ', sort.type);
+      setData([].concat(props.data).sort((a: Primitive[] | DataCell[], b) => {
+        let result: number;
+        if (sort.type === Sort.Asc) {
+          result = extractValue(a[index]) > extractValue(b[index]) ? 1 : -1;
+        } else {
+          result = extractValue(b[index]) > extractValue(a[index]) ? 1 : -1;
+        }
+        return result;
+      }));
+    }
+  };
+
+  const getWidthFromIndex = (index: number) => {
+    return getWidth(weights[index]);
+  };
+
+  const getWidth = (weight: number) => {
+    return 'calc(' + (weight / weightsSum * 100) + '% - 2px';
+  };
+
+  logger.log('sort: ', sort);
+  const onChangeSort = (name: Primitive) => {
+    if (sort.name === name) {
+      setSort((oldSort: any) => ({
+        ...oldSort,
+        type: ((oldSort.type + 1) % 3),
+      }));
+    } else {
+      logger.log('ASC');
+      setSort({name, type: Sort.Asc});
+    }
+  };
+
+  const getSortIcons = (name: Primitive) => {
+    if (!props.sort) {
+      return <></>;
+    } else if (!sort || sort.name !== name || sort.type === Sort.Both) {
+      return <img className='react-cell-grid-sort-icon' onClick={() => onChangeSort(name)} src={sortBothIcon}></img>;
+    } else if (sort.type === Sort.Asc) {
+      return <img className='react-cell-grid-sort-icon' onClick={() => onChangeSort(name)} src={sortUpIcon}></img>;
+    } else {
+      return <img className='react-cell-grid-sort-icon' onClick={() => onChangeSort(name)} src={sortDownIcon}></img>;
+    }
+  };
+
 
   if (!ready) {
     logger.log('headers: ', headers);
@@ -100,14 +219,6 @@ const Grid = (props: any): JSX.Element => {
     setReady(true);
   }
 
-  const getWidthFromIndex = (index: number) => {
-    return getWidth(weights[index]);
-  };
-
-  const getWidth = (weight: number) => {
-    return 'calc(' + (weight / weightsSum * 100) + '% - 2px';
-  };
-
   return (
     <>
       {logger.log('Refresh rendering Data init: ', data)}
@@ -126,7 +237,8 @@ const Grid = (props: any): JSX.Element => {
               for (let j = 0; j < headers[i][1].length; j++) {
                 headersRowTemp.push(
                   <div key={headers[i][1][j]+'_'+i+'_'+j} className='react-cell-grid-cell react-cell-grid-header-cell' style={{ width: getWidthFromIndex(weightIndex) }}>
-                    {headers[i][1][j]}
+                    <div>{headers[i][1][j]}</div>
+                    {getSortIcons(headers[i][1][j])}
                   </div>);
                 weight += weights[weightIndex++];
               }
@@ -143,6 +255,7 @@ const Grid = (props: any): JSX.Element => {
             for (let i = 0; i < headers.length; i++) {
               headersRow.push(<div key={headers[i]} className='react-cell-grid-cell react-cell-grid-header-cell' style={{ width: getWidthFromIndex(i) }}>
                 <div>{headers[i]}</div>
+                {getSortIcons(headers[i])}
               </div>);
             }
             result = <div className='react-cell-grid-header'>{headersRow}</div>;
@@ -155,7 +268,7 @@ const Grid = (props: any): JSX.Element => {
             logger.log('data rendering');
             const dataRows = [];
             for (let i = 0; i < data.length; i++) {
-              logger.log('data rendering [', i, ']: ', data[i]);
+              // logger.log('data rendering [', i, ']: ', data[i]);
               dataRows.push(<div key={'row_'+i} className='react-cell-grid-row'>{(() => {
                 const dataRow = [];
                 for (let j = 0; j < data[i].length; j++) {

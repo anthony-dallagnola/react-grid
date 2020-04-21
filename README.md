@@ -41,5 +41,15 @@ The object format allows to do some other things to the cell, you can add a _hre
 ```
 will create a 3x3 Grid plus headers
 
+### Sort
+To add the ability to sort each column, in single row it is the headers row and double row only the bottom row, you can set the sort props to true. It will enable icons on each column at first if no default is set all columns have double arrowed icon, if you can on one it will sort by ascending order and let top arrow, another click will sort by descending order and another will come back to no sort.
+To specify a default sorted column, use the defaultSort props, with an object containing the name of the column key `name` which be equal to an header column and the sort type in key `type` 0 for default, 1 for ascending and 2 for descending.
+```
+{
+  name: 'header1',
+  type: 1
+}
+```
+
 ## License
 MIT

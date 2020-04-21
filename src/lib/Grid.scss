@@ -37,6 +37,19 @@ $grid-border-color: black;
   line-height: 20px;
 }
 
+/* sort icons */
+.react-cell-grid-sort-icon-container img {
+  height: 20px;
+}
+
+.react-cell-grid-sort-icon {
+  height: 15px;
+  position: absolute;
+  right: 0;
+  top: 2.5px;
+  cursor: pointer;
+}
+
 .react-cell-grid-cell {
   font-size: 12px;
   display: inline-block;
