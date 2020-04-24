@@ -227,7 +227,7 @@ const Grid = (props: any): JSX.Element => {
         {(() => {
           const headersRow = [];
           let result;
-          if (typeof headers[0] === 'object') {
+          if (Array.isArray(headers[0])) {
             // we have double header format
             let weightIndex = 0;
             const topHeadersRow = [];
@@ -255,6 +255,7 @@ const Grid = (props: any): JSX.Element => {
             for (let i = 0; i < headers.length; i++) {
               headersRow.push(<div key={headers[i]} className='react-cell-grid-cell react-cell-grid-header-cell' style={{ width: getWidthFromIndex(i) }}>
                 <div>{headers[i]}</div>
+                {/* <GetSortIcons name={headers[i]}/> */}
                 {getSortIcons(headers[i])}
               </div>);
             }

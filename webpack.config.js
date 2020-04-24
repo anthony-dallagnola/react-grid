@@ -13,7 +13,7 @@ module.exports = {
   output: {
     path: DIST_DIR,
     publicPath: '/',
-    filename: '[name].js',
+    filename: 'Grid.js',
     libraryTarget: 'umd',
     library: 'ReactCellGrid',
   },

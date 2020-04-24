@@ -15,7 +15,8 @@
     "jsx": "react",
     /* Generate corresponding .map files */
     "sourceMap": true,
-    "declaration": true,
+    /* Generate corresponding .d.ts files */
+    // "declaration": true,
     /* Enable all strict type-checking options */
     "strict": true,
     /* Specify module resolution strategy */
@@ -45,7 +46,7 @@
     "skipLibCheck": true
   },
   "include": [
-    "./src/**/*"
+    "./src/lib/**/*"
   ],
   "parserOptions": {
     "ecmaFeatures": {
