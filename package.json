@@ -1,6 +1,6 @@
 {
   "name": "react-cell-grid",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "A grid react component",
   "main": "dist/Grid.js",
   "module": "dist/Grid.js",
@@ -27,7 +27,9 @@
     "//build": "rm -rf dist && NODE_ENV=production babel src/lib --extensions '.tsx' --out-dir dist --copy-files --ignore __tests__,spec.js,test.js,__snapshots__",
     "check-types": "tsc",
     "transpile": "rm -rf dist && babel src/lib -d dist --copy-files --ignore *.tsx,*.scss,*.d.ts,*.ts",
-    "prepublishOnly": "npm run transpile"
+    "//": "Called before npm publish",
+    "//prepublishOnly": "npm run transpile",
+    "publish:dry-run": "npm publish --dry-run"
   },
   "browserslist": [
     ">0.2%",
