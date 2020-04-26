@@ -6,8 +6,8 @@ import sortUpIcon from './assets/sort-up.svg';
 import sortDownIcon from './assets/sort-down.svg';
 import sortBothIcon from './assets/sort-both.svg';
 import { Sort } from './models/enums/Sort.enum';
-import './Grid.scss';
 import { DataCell } from './models/DataCell';
+import { SortIcon, GridContainer, DivHeaderCell, GridHeader, GridRow, DivDataCell, DivDataCellContent } from './Grid.style';
 
 const logger: any = {};
 const Grid = (props: any): JSX.Element => {
@@ -112,7 +112,7 @@ const Grid = (props: any): JSX.Element => {
   };
 
   const getWidth = (weight: number) => {
-    return 'calc(' + (weight / weightsSum * 100) + '% - 2px';
+    return 'calc(' + (weight / weightsSum * 100) + '% - 2px)';
   };
 
   logger.log('sort: ', sort);
@@ -132,11 +132,11 @@ const Grid = (props: any): JSX.Element => {
     if (!props.sort) {
       return <></>;
     } else if (!sort || sort.name !== name || sort.type === Sort.Both) {
-      return <img className='react-cell-grid-sort-icon' onClick={() => onChangeSort(name)} src={sortBothIcon}></img>;
+      return <SortIcon onClick={() => onChangeSort(name)} src={sortBothIcon}/>;
     } else if (sort.type === Sort.Asc) {
-      return <img className='react-cell-grid-sort-icon' onClick={() => onChangeSort(name)} src={sortUpIcon}></img>;
+      return <SortIcon onClick={() => onChangeSort(name)} src={sortUpIcon}/>;
     } else {
-      return <img className='react-cell-grid-sort-icon' onClick={() => onChangeSort(name)} src={sortDownIcon}></img>;
+      return <SortIcon onClick={() => onChangeSort(name)} src={sortDownIcon}/>;
     }
   };
 
@@ -221,8 +221,7 @@ const Grid = (props: any): JSX.Element => {
 
   return (
     <>
-      {logger.log('Refresh rendering Data init: ', data)}
-      <div className='react-cell-grid-container'>
+      <GridContainer>
         {/* Header(s) */}
         {(() => {
           const headersRow = [];
@@ -236,61 +235,61 @@ const Grid = (props: any): JSX.Element => {
               let weight = 0;
               for (let j = 0; j < headers[i][1].length; j++) {
                 headersRowTemp.push(
-                  <div key={headers[i][1][j]+'_'+i+'_'+j} className='react-cell-grid-cell react-cell-grid-header-cell' style={{ width: getWidthFromIndex(weightIndex) }}>
+                  <DivHeaderCell key={headers[i][1][j]+'_'+i+'_'+j} width={getWidthFromIndex(weightIndex)}>
                     <div>{headers[i][1][j]}</div>
                     {getSortIcons(headers[i][1][j])}
-                  </div>);
+                  </DivHeaderCell>);
                 weight += weights[weightIndex++];
               }
               topHeadersRow.push(
-                <div key={headers[i][0]+'_'+i} className='react-cell-grid-cell react-cell-grid-header-cell' style={{ width: getWidth(weight) }}>{headers[i][0]}
-                </div>);
+                <DivHeaderCell key={headers[i][0]+'_'+i} width={getWidth(weight)}>{headers[i][0]}
+                </DivHeaderCell>);
             }
             result = <>
-              <div key={'header_0'} className='react-cell-grid-header'>{topHeadersRow}</div>
-              <div key={'header_1'} className='react-cell-grid-header'>{headersRowTemp}</div>
+              <GridHeader key={'header_0'} >{topHeadersRow}</GridHeader>
+              <GridHeader key={'header_1'} >{headersRowTemp}</GridHeader>
             </>;
           } else {
             // single header
             for (let i = 0; i < headers.length; i++) {
-              headersRow.push(<div key={headers[i]} className='react-cell-grid-cell react-cell-grid-header-cell' style={{ width: getWidthFromIndex(i) }}>
+              headersRow.push(<DivHeaderCell key={headers[i]} width={getWidthFromIndex(i)}>
                 <div>{headers[i]}</div>
                 {/* <GetSortIcons name={headers[i]}/> */}
                 {getSortIcons(headers[i])}
-              </div>);
+              </DivHeaderCell>);
             }
-            result = <div className='react-cell-grid-header'>{headersRow}</div>;
+            result = <GridHeader >{headersRow}</GridHeader>;
           }
           return result;
         })()}
         {/* Rows */}
-        <div className='react-cell-grid-rows'>
+        <div>
           {(() => {
             logger.log('data rendering');
             const dataRows = [];
             for (let i = 0; i < data.length; i++) {
               // logger.log('data rendering [', i, ']: ', data[i]);
-              dataRows.push(<div key={'row_'+i} className='react-cell-grid-row'>{(() => {
+              dataRows.push(<GridRow key={'row_'+i} >{(() => {
                 const dataRow = [];
                 for (let j = 0; j < data[i].length; j++) {
                   if (typeof data[i][j] === 'object') {
-                    dataRow.push(<div key={data[i][j].value+'_'+i+'_'+j} className='react-cell-grid-cell react-cell-grid-data-cell' style={{ width: getWidthFromIndex(j) }}>
-                      <a href={data[i][j]._href}><div>{data[i][j].value}</div></a>
-                    </div>);
+                    dataRow.push(<DivDataCell key={data[i][j].value+'_'+i+'_'+j} width={getWidthFromIndex(j)}>
+                      <a href={data[i][j]._href}><DivDataCellContent>{data[i][j].value}</DivDataCellContent></a>
+                    </DivDataCell>);
                   } else {
                     dataRow.push(
-                      <div key={data[i][j]+'_'+i+'_'+j} className='react-cell-grid-cell react-cell-grid-data-cell' style={{ width: getWidthFromIndex(j) }}>
-                        <div>{data[i][j]}</div>
-                      </div>);
+                      <DivDataCell key={data[i][j]+'_'+i+'_'+j} width={getWidthFromIndex(j)}>
+                        <DivDataCellContent>{data[i][j]}</DivDataCellContent>
+                      </DivDataCell>);
                   }
                 }
                 return dataRow;
-              })()}</div>);
+              })()}</GridRow>);
             }
             return dataRows;
           })()}
         </div>
-      </div>
+      </GridContainer>
     </>
   );
 };
