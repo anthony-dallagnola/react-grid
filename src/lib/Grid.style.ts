@@ -54,6 +54,7 @@ const SortIcon = styled.img`
   top: 2.5px;
   cursor: pointer;
 `;
+SortIcon.displayName = 'SortIcon';
 
 const cellStyle = `
   display: inline-block;

@@ -10,46 +10,31 @@ const propsHeader: any = {
 
 describe('Header:', () => {
   it('Undefined or null', () => {
-    let grid = shallow(<Grid {...propsHeader} />);
-    expect(grid.find('div').text()).toBe(ERRORS.HEADER.UNDEFINED_OR_NULL);
-    grid = shallow(<Grid {...propsHeader} headers={null} />);
-    expect(grid.find('div').text()).toBe(ERRORS.HEADER.UNDEFINED_OR_NULL);
+    testExpectError({ ...propsHeader }, ERRORS.HEADER.UNDEFINED_OR_NULL);
+    testExpectError({ ...propsHeader, headers: null }, ERRORS.HEADER.UNDEFINED_OR_NULL);
   });
 
   it('Empty', () => {
-    const grid = shallow(<Grid {...propsHeader} headers={[]}/>);
-    expect(grid.find('div').text()).toBe(ERRORS.HEADER.EMPTY);
+    testExpectError({ ...propsHeader, headers: [] }, ERRORS.HEADER.EMPTY);
   });
 
   it('Mixing single and double header', () => {
-    const headers = ['Hello', ['There', ['and there']]];
-    const grid = shallow(<Grid {...propsHeader} headers={headers} />);
-    expect(grid.find('div').text()).toBe(ERRORS.HEADER.MIXING_SINGLE_AND_DOUBLE);
+    testExpectError({ ...propsHeader, headers: ['Hello', ['There', ['and there']]] }, ERRORS.HEADER.MIXING_SINGLE_AND_DOUBLE);
   });
 
   it('Invalid format', () => {
     /* single row headers */
-    const headers = ['Hello', {}];
-    let grid = shallow(<Grid {...propsHeader} headers={headers} />);
-    expect(grid.find('div').text()).toBe(ERRORS.HEADER.INVALID_FORMAT);
+    testExpectError({ ...propsHeader, headers: ['Hello', {}] }, ERRORS.HEADER.INVALID_FORMAT);
 
     /* double row headers */
     // object instead of primitive
-    let headers2 = [['Hello', ['']], {a: ['There', ['and there']]}];
-    grid = shallow(<Grid {...propsHeader} headers={headers2} />);
-    expect(grid.find('div').text()).toBe(ERRORS.HEADER.INVALID_FORMAT);
+    testExpectError({ ...propsHeader, headers: [['Hello', ['']], { a: ['There', ['and there']] }] }, ERRORS.HEADER.INVALID_FORMAT);
     // too many elements
-    headers2 = [['Hello', ['']], ['There', ['and there'], 'also there']];
-    grid = shallow(<Grid {...propsHeader} headers={headers2} />);
-    expect(grid.find('div').text()).toBe(ERRORS.HEADER.INVALID_FORMAT);
+    testExpectError({ ...propsHeader, headers: [['Hello', ['']], ['There', ['and there'], 'also there']] }, ERRORS.HEADER.INVALID_FORMAT);
     // first element of titles is an object
-    const headers3 = [['Hello', ['']], [{}, ['and there']]];
-    grid = shallow(<Grid {...propsHeader} headers={headers3} />);
-    expect(grid.find('div').text()).toBe(ERRORS.HEADER.INVALID_FORMAT);
+    testExpectError({ ...propsHeader, headers: [['Hello', ['']], [{}, ['and there']]] }, ERRORS.HEADER.INVALID_FORMAT);
     // list of titles is a primitive
-    headers2 = [['Hello', ['']], ['There', 'and there']];
-    grid = shallow(<Grid {...propsHeader} headers={headers2} />);
-    expect(grid.find('div').text()).toBe(ERRORS.HEADER.INVALID_FORMAT);
+    testExpectError({ ...propsHeader, headers: [['Hello', ['']], ['There', 'and there']] }, ERRORS.HEADER.INVALID_FORMAT);
   });
 });
 // we add a valid headers parameter
@@ -59,32 +44,21 @@ const propsData = {
 };
 describe('Data: ', () => {
   it('Undefined or null', () => {
-    let grid = shallow(<Grid {...propsData} />);
-    expect(grid.find('div').text()).toBe(ERRORS.DATA.UNDEFINED_OR_NULL);
-    grid = shallow(<Grid {...propsData} data={null} />);
-    expect(grid.find('div').text()).toBe(ERRORS.DATA.UNDEFINED_OR_NULL);
+    testExpectError({ ...propsData }, ERRORS.DATA.UNDEFINED_OR_NULL);
+    testExpectError({ ...propsData, data: null }, ERRORS.DATA.UNDEFINED_OR_NULL);
   });
   it('Empty', () => {
-    const grid = shallow(<Grid {...propsData} data={[]} />);
-    expect(grid.find('div').text()).toBe(ERRORS.DATA.EMPTY);
+    testExpectError({ ...propsData, data: [] }, ERRORS.DATA.EMPTY);
   });
   it('Rows length mismatch header', () => {
-    let data = [['a', 'b']];
-    let grid = shallow(<Grid {...propsData} data={data} />);
-    expect(grid.find('div').text()).toBe(ERRORS.DATA.LENGTH);
-    data = [['a', 'b', 'c'], ['a', 'b']];
-    grid = shallow(<Grid {...propsData} data={data} />);
-    expect(grid.find('div').text()).toBe(ERRORS.DATA.LENGTH);
+    testExpectError({ ...propsData, data: [['a', 'b']] }, ERRORS.DATA.LENGTH);
+    testExpectError({ ...propsData, data: [['a', 'b', 'c'], ['a', 'b']] }, ERRORS.DATA.LENGTH);
   });
   it('Data cell invalid format', () => {
-    const data = [['a', 'b', []]];
-    const grid = shallow(<Grid {...propsData} data={data} />);
-    expect(grid.find('div').text()).toBe(ERRORS.DATA.INVALID_TYPE_CELL);
+    testExpectError({ ...propsData, data: [['a', 'b', []]] }, ERRORS.DATA.INVALID_TYPE_CELL);
   });
   it('Data cell missing value field', () => {
-    const data = [['a', 'b', {}]];
-    const grid = shallow(<Grid {...propsData} data={data} />);
-    expect(grid.find('div').text()).toBe(ERRORS.DATA.MISSING_VALUE_FIELD);
+    testExpectError({ ...propsData, data: [['a', 'b', {}]] }, ERRORS.DATA.MISSING_VALUE_FIELD);
   });
 });
 
@@ -94,14 +68,75 @@ const propsWeights = {
 };
 
 describe('Weights: ', () => {
-  it('length', () => {
-    const weights = [1.2, 3];
-    const grid = shallow(<Grid {...propsWeights} weights={weights} />);
-    expect(grid.find('div').text()).toBe(ERRORS.WEIGHTS.LENGTH);
+  it('Length', () => {
+    testExpectError({ ...propsWeights, weights: [1.2, 3] }, ERRORS.WEIGHTS.LENGTH);
   });
   it('Invalid format', () => {
-    const weights = ['a', 1, 2];
-    const grid = shallow(<Grid {...propsWeights} weights={weights} />);
-    expect(grid.find('div').text()).toBe(ERRORS.WEIGHTS.INVALID_FORMAT);
+    testExpectError({ ...propsWeights, weights: ['a', 1, 2] }, ERRORS.WEIGHTS.INVALID_FORMAT);
   });
 });
+
+
+const propsSort = {
+  ...propsWeights,
+  sort: true,
+};
+describe('Sort: ', () => {
+  it('Icons not created', () => {
+    const grid = shallow(<Grid {...propsSort} sort={false} />);
+    const images = grid.find('SortIcon');
+    expect(images).toHaveLength(0);
+  });
+
+  it('Icons created', () => {
+    const grid = shallow(<Grid {...propsSort} />);
+    const images = grid.find('SortIcon');
+    expect(images).toHaveLength(3);
+    for (let i = 0; i < images.length; i++) {
+      expect(images.at(i).props().src).toBe('sort-both.svg');
+    }
+  });
+
+  it('Default sort ok', () => {
+    const defaultSort = {name: 'b', type: 1};
+    const grid = shallow(<Grid {...propsSort} defaultSort={defaultSort} />);
+    const images = grid.find('SortIcon');
+    expect(images).toHaveLength(3);
+    expect(images.at(0).props().src).toBe('sort-both.svg');
+    expect(images.at(1).props().src).toBe('sort-up.svg');
+    expect(images.at(2).props().src).toBe('sort-both.svg');
+  });
+
+  it('Default sort invalid format', () => {
+    testExpectError({...propsSort, defaultSort: {}}, ERRORS.DEFAULT_SORT.INVALID_FORMAT);
+    testExpectError({...propsSort, defaultSort: []}, ERRORS.DEFAULT_SORT.INVALID_FORMAT);
+    testExpectError({...propsSort, defaultSort: {name: 'a'}}, ERRORS.DEFAULT_SORT.INVALID_FORMAT);
+    testExpectError({...propsSort, defaultSort: {type: 0}}, ERRORS.DEFAULT_SORT.INVALID_FORMAT);
+    testExpectError({...propsSort, defaultSort: {name: ['a'], type: 0}}, ERRORS.DEFAULT_SORT.INVALID_FORMAT);
+    testExpectError({...propsSort, defaultSort: {name: {a: 'a'}, type: 0}}, ERRORS.DEFAULT_SORT.INVALID_FORMAT);
+    testExpectError({...propsSort, defaultSort: {name: null, type: 0}}, ERRORS.DEFAULT_SORT.INVALID_FORMAT);
+    testExpectError({...propsSort, defaultSort: {name: 'a', type: 'a'}}, ERRORS.DEFAULT_SORT.INVALID_FORMAT);
+    testExpectError({...propsSort, defaultSort: {name: 'a', type: ['a']}}, ERRORS.DEFAULT_SORT.INVALID_FORMAT);
+    testExpectError({...propsSort, defaultSort: {name: 'a', type: {a: 'a'}}}, ERRORS.DEFAULT_SORT.INVALID_FORMAT);
+    testExpectError({...propsSort, defaultSort: {name: 'a', type: null}}, ERRORS.DEFAULT_SORT.INVALID_FORMAT);
+  });
+
+  it('Default sort on inexisting header', () => {
+    testExpectError({ ...propsSort, defaultSort: { name: 'd', type: 0 } }, ERRORS.DEFAULT_SORT.INEXISTANT_HEADER);
+    testExpectError({ ...propsSort, headers: [['t', ['a', 'b']], ['t2', ['c']]], defaultSort: { name: 'd', type: 0 } }, ERRORS.DEFAULT_SORT.INEXISTANT_HEADER);
+  });
+});
+
+/**
+ * Tests simple errors that render div with error as text
+ *
+ * @param {Object} props object containing the props to build the Grid component
+ * @param {String} error expected error
+ * @returns {Void} void
+ */
+function testExpectError(props: object, error: string) {
+  const grid = shallow(<Grid {...props} />);
+  const div = grid.find('div');
+  expect(div).toHaveLength(1);
+  expect(grid.find('div').text()).toBe(error);
+}

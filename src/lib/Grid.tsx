@@ -9,13 +9,19 @@ import { Sort } from './models/enums/Sort.enum';
 import { DataCell } from './models/DataCell';
 import { SortIcon, GridContainer, DivHeaderCell, GridHeader, GridRow, DivDataCell, DivDataCellContent } from './Grid.style';
 
-const logger: any = {};
+let logger: any = {};
 const Grid = (props: any): JSX.Element => {
   // disable logging if debug is not set
   if (props.debug) {
-    logger.log = (...args: any[]) => console.log(...[PREFIX+': '].concat(args));
+    logger = {
+      log: (...args: any[]) => console.log(...[PREFIX+': '].concat(args)),
+      warn: (...args: any[]) => console.warn(...[PREFIX+': '].concat(args)),
+    };
   } else {
-    logger.log = () => { };
+    logger = {
+      log: () => { },
+      warn: () => { },
+    };
   }
 
   const [ready, setReady] = useState(false);
@@ -24,19 +30,17 @@ const Grid = (props: any): JSX.Element => {
   const [data, setData] = useState(props.data);
   const [weights, setWeights] = useState<number[]>(props.weights ? props.weights : []);
   const [weightsSum, setWeightsSum] = useState<number>(0);
-  const [sort, setSort] = useState(props.defaultSort ? props.defaultSort : {});
+  const [sort, setSort] = useState(props.defaultSort);
 
   useEffect(() => {
-    // if (sortData) {
     sortData();
-    // }
   }, [sort]);
 
   useEffect(() => {
     setHeaders(props.headers);
     setData(props.data);
-    setWeights(props.weights ? props.weights : []);
-    setSort(props.defaultSort ? props.defaultSort : {});
+    setWeights(props.weights || []);
+    setSort(props.defaultSort);
     setReady(false);
   }, [props]);
 
@@ -214,8 +218,28 @@ const Grid = (props: any): JSX.Element => {
       }
     }
     logger.log('weights: ', weights);
-    setWeightsSum(weights.reduce((total: any, value: any) => total + value));
+    if (!weightsSum) {
+      setWeightsSum(weights.reduce((total: any, value: any) => total + value));
+    }
     logger.log('weightsSum: ', weightsSum);
+
+    if (props.sort) {
+      if (typeof props.defaultSort !== 'undefined') {
+        if (typeof props.defaultSort !== 'object' || typeof props.defaultSort.name === 'undefined' || !isPrimitive(props.defaultSort.name) ||
+         typeof props.defaultSort.type === 'undefined' || ![Sort.Both, Sort.Asc, Sort.Desc].includes(parseInt(sort.type))) {
+          return <div>{ERRORS.DEFAULT_SORT.INVALID_FORMAT}</div>;
+        }
+        if (isSingleRowHeader) {
+          if (!headers.includes(props.defaultSort.name)) {
+            return <div>{ERRORS.DEFAULT_SORT.INEXISTANT_HEADER}</div>;
+          }
+        } else if (!headers.reduce((t: Primitive[], v: Primitive[][]) => t.concat(v[1]), []).includes(props.defaultSort.name)) {
+          return <div>{ERRORS.DEFAULT_SORT.INEXISTANT_HEADER}</div>;
+        }
+      }
+    } else if (props.defaultSort) {
+      logger.warn('sortDefault is set but sort is not enabled with sort={true}');
+    }
     setReady(true);
   }
 
