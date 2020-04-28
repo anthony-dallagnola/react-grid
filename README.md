@@ -31,10 +31,11 @@ You can set the weights the way you want, integers or floats and the sum can be 
 ### Data
 To make the data is displayed in the right order you have to format the data accordingly. The grid component will be waiting for an array of arrays, it must match the order on the headers part. 
 There are two ways to send the data, either a primitive, string, number, boolean or an object where the displayed value must be stored in a value key.
-The object format allows to do some other things to the cell, you can add a _href: 'value' to redirect the user on the desired page when click on the cell. It's all for now but the functionalities will add up along the way.
+The object format allows to do some other things to the cell as follow
+  * _href: 'value' to redirect the user on the desired page when click on the cell. It's all for now but the functionalities will add up along the way. It accepts relative or absolute paths
 ```
 [
-  ['1', '2', '3'],
+  ['1', {value:'2',_href:'https://github.com'}, '3'],
   ['4', 5, '6'],
   ['7', '8', '9']
 ]

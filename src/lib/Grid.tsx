@@ -134,6 +134,26 @@ const Grid = (props: any): JSX.Element => {
     }));
   };
 
+  const getWeightFromTopHeader = (index: number) => {
+    let j = 0;
+    for (let i = 0; i < index; i++) {
+      j += grid.headers[i][1].length;
+    }
+    let weight = 0;
+    for (let i = 0; i < grid.headers[index][1].length; i++) {
+      weight += grid.weights[j+i];
+    }
+    return weight;
+  };
+
+  const getIndexFromTopHeader = (indexTop: number, index: number) => {
+    let j = 0;
+    for (let i = 0; i < indexTop; i++) {
+      j += grid.headers[i][1].length;
+    }
+    return j+index;
+  };
+
   const getWidthFromIndex = (index: number) => {
     return getWidth(grid.weights[index]);
   };
@@ -278,70 +298,53 @@ const Grid = (props: any): JSX.Element => {
     <>
       <GridContainer>
         {/* Header(s) */}
-        {(() => {
-          const headersRow = [];
-          let result;
-          if (Array.isArray(grid.headers[0])) {
-            // we have double header format
-            let weightIndex = 0;
-            const topHeadersRow = [];
-            const headersRowTemp = [];
-            for (let i = 0; i < grid.headers.length; i++) {
-              let weight = 0;
-              for (let j = 0; j < grid.headers[i][1].length; j++) {
-                headersRowTemp.push(
-                  <DivHeaderCell key={grid.headers[i][1][j]+'_'+i+'_'+j} width={getWidthFromIndex(weightIndex)}>
-                    <div>{grid.headers[i][1][j]}</div>
-                    {getSortIcons(grid.headers[i][1][j])}
-                  </DivHeaderCell>);
-                weight += grid.weights[weightIndex++];
+        {grid.isSingleRowHeader ?
+          <GridHeader>
+            {grid.headers.map((header: Primitive, i: number) =>
+              <DivHeaderCell key={String(header)} width={getWidthFromIndex(i)}>
+                <div>{header}</div>
+                {getSortIcons(header)}
+                {/* <GetSortIcons name={header} /> */}
+              </DivHeaderCell>,
+            )}
+          </GridHeader> :
+          <>
+            <GridHeader>
+              {grid.headers.map((header: (Primitive|Primitive[])[], i: number) =>
+                <DivHeaderCell key={String(header[0] + '_' + i)} width={getWidth(getWeightFromTopHeader(i))}>
+                  {header[0]}
+                </DivHeaderCell>,
+              )}
+            </GridHeader>
+            <GridHeader>
+              {grid.headers.map((header: (Primitive | Primitive[])[], i: number) =>
+                (header[1] as Primitive[]).map((cell: Primitive, j: number) =>
+                  <DivHeaderCell key={cell + '_' + i + '_' + j} width={getWidthFromIndex(getIndexFromTopHeader(i, j))}>
+                    <div>{cell}</div>
+                    {getSortIcons(cell)}
+                    {/* <GetSortIcons name={cell}/> */}
+                  </DivHeaderCell>,
+                ))
               }
-              topHeadersRow.push(
-                <DivHeaderCell key={grid.headers[i][0]+'_'+i} width={getWidth(weight)}>{grid.headers[i][0]}
-                </DivHeaderCell>);
-            }
-            result = <>
-              <GridHeader key={'header_0'} >{topHeadersRow}</GridHeader>
-              <GridHeader key={'header_1'} >{headersRowTemp}</GridHeader>
-            </>;
-          } else {
-            // single header
-            for (let i = 0; i < grid.headers.length; i++) {
-              headersRow.push(<DivHeaderCell key={grid.headers[i]} width={getWidthFromIndex(i)}>
-                <div>{grid.headers[i]}</div>
-                {/* <GetSortIcons name={headers[i]}/> */}
-                {getSortIcons(grid.headers[i])}
-              </DivHeaderCell>);
-            }
-            result = <GridHeader >{headersRow}</GridHeader>;
-          }
-          return result;
-        })()}
+            </GridHeader>
+          </>
+        }
         {/* Rows */}
         <div>
-          {(() => {
-            const dataRows = [];
-            for (let i = 0; i < grid.data.length; i++) {
-              // logger.log('data rendering [', i, ']: ', data[i]);
-              dataRows.push(<GridRow key={'row_'+i} >{(() => {
-                const dataRow = [];
-                for (let j = 0; j < grid.data[i].length; j++) {
-                  if (typeof grid.data[i][j] === 'object') {
-                    dataRow.push(<DivDataCell key={grid.data[i][j].value+'_'+i+'_'+j} width={getWidthFromIndex(j)}>
-                      <a href={grid.data[i][j]._href}><DivDataCellContent>{grid.data[i][j].value}</DivDataCellContent></a>
-                    </DivDataCell>);
-                  } else {
-                    dataRow.push(
-                      <DivDataCell key={grid.data[i][j]+'_'+i+'_'+j} width={getWidthFromIndex(j)}>
-                        <DivDataCellContent>{grid.data[i][j]}</DivDataCellContent>
-                      </DivDataCell>);
-                  }
-                }
-                return dataRow;
-              })()}</GridRow>);
-            }
-            return dataRows;
-          })()}
+          {grid.data.map((row: (string|DataCell)[], i: number) =>
+            <GridRow key={'row_' + i}>
+              {row.map((cell: string | DataCell, j: number) =>
+                isDataCell(cell) ?
+                  <DivDataCell key={cell.value + '_' + i + '_' + j} width={getWidthFromIndex(j)}>
+                    <a href={cell._href}>
+                      <DivDataCellContent>{cell.value}</DivDataCellContent></a>
+                  </DivDataCell> :
+                  <DivDataCell key={cell + '_' + i + '_' + j} width={getWidthFromIndex(j)}>
+                    <DivDataCellContent>{cell}</DivDataCellContent>
+                  </DivDataCell>,
+              )}
+            </GridRow>,
+          )}
         </div>
       </GridContainer>
     </>
