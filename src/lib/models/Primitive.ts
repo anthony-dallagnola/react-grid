@@ -1,3 +1,1 @@
-export type Primitive = {
-  element: string | number | boolean
-}
+export type Primitive = string | number | boolean;
