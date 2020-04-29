@@ -2,6 +2,7 @@ import React from 'react';
 import { shallow, HTMLAttributes, mount, ReactWrapper } from 'enzyme';
 import Grid from '../lib/Grid';
 import { ERRORS } from '../lib/utils/constants';
+import renderer from 'react-test-renderer';
 import '../setupTests';
 
 const propsHeader: any = {
@@ -143,6 +144,15 @@ describe('Sort: ', () => {
   it('Default sort on inexisting header', () => {
     testExpectError({ ...propsSort, defaultSort: { name: 'd', type: 0 } }, ERRORS.DEFAULT_SORT.INEXISTANT_HEADER);
     testExpectError({ ...propsSort, headers: [['t', ['a', 'b']], ['t2', ['c']]], defaultSort: { name: 'd', type: 0 } }, ERRORS.DEFAULT_SORT.INEXISTANT_HEADER);
+  });
+});
+
+describe('Snapshot on Grid', () => {
+  it('renders correctly', () => {
+    const rendered = renderer.create(
+      <Grid {...propsSort} />,
+    );
+    expect(rendered.toJSON()).toMatchSnapshot();
   });
 });
 

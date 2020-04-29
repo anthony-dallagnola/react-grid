@@ -1,0 +1,87 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Snapshot on Grid renders correctly 1`] = `
+<div
+  className="sc-AxjAm nLOwl"
+>
+  <div
+    className="sc-AxirZ celHmN"
+  >
+    <div
+      className="sc-AxhUy liDVmT"
+      width="calc(33.33333333333333% - 2px)"
+    >
+      <div>
+        a
+      </div>
+      <img
+        className="sc-AxhCb oFDjl"
+        onClick={[Function]}
+        src="sort-both.svg"
+      />
+    </div>
+    <div
+      className="sc-AxhUy liDVmT"
+      width="calc(33.33333333333333% - 2px)"
+    >
+      <div>
+        b
+      </div>
+      <img
+        className="sc-AxhCb oFDjl"
+        onClick={[Function]}
+        src="sort-both.svg"
+      />
+    </div>
+    <div
+      className="sc-AxhUy liDVmT"
+      width="calc(33.33333333333333% - 2px)"
+    >
+      <div>
+        c
+      </div>
+      <img
+        className="sc-AxhCb oFDjl"
+        onClick={[Function]}
+        src="sort-both.svg"
+      />
+    </div>
+  </div>
+  <div>
+    <div
+      className="sc-AxiKw gdJtAp"
+    >
+      <div
+        className="sc-AxgMl fAoDLv"
+        width="calc(33.33333333333333% - 2px)"
+      >
+        <div
+          className="sc-AxheI kfcUCx"
+        >
+          1
+        </div>
+      </div>
+      <div
+        className="sc-AxgMl fAoDLv"
+        width="calc(33.33333333333333% - 2px)"
+      >
+        <div
+          className="sc-AxheI kfcUCx"
+        >
+          2
+        </div>
+      </div>
+      <div
+        className="sc-AxgMl fAoDLv"
+        width="calc(33.33333333333333% - 2px)"
+      >
+        <div
+          className="sc-AxheI kfcUCx"
+        >
+          3
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
