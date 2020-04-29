@@ -1,5 +1,5 @@
 import React from 'react';
-import { shallow, ShallowWrapper, HTMLAttributes } from 'enzyme';
+import { shallow, HTMLAttributes, mount, ReactWrapper } from 'enzyme';
 import Grid from '../lib/Grid';
 import { ERRORS } from '../lib/utils/constants';
 import '../setupTests';
@@ -89,7 +89,7 @@ describe('Sort: ', () => {
   });
 
   it('Icons ok', () => {
-    const grid = shallow(<Grid {...propsSort} />);
+    const grid = mount(<Grid {...propsSort} />);
     let images = grid.find('SortIcon');
     // default sort
     expect(images).toHaveLength(3);
@@ -121,12 +121,9 @@ describe('Sort: ', () => {
 
   it('Default sort ok', () => {
     const defaultSort = {name: 'b', type: 1};
-    const grid = shallow(<Grid {...propsSort} defaultSort={defaultSort} />);
+    const grid = mount(<Grid {...propsSort} defaultSort={defaultSort} />);
     const images = grid.find('SortIcon');
-    expect(images).toHaveLength(3);
-    expect(images.at(0).props().src).toBe('sort-both.svg');
-    expect(images.at(1).props().src).toBe('sort-up.svg');
-    expect(images.at(2).props().src).toBe('sort-both.svg');
+    testExpectSrcFromArray(images, ['sort-both.svg', 'sort-up.svg', 'sort-both.svg']);
   });
 
   it('Default sort invalid format', () => {
@@ -166,11 +163,11 @@ function testExpectError(props: object, error: string): void {
 /**
  * Tests if all the img have the right src value
  *
- * @param {ShallowWrapper} images list of image markups
+ * @param {ReactWrapper} images list of image markups
  * @param {String[]} expectedList list of expected srcs
  * @returns {Void} void
  */
-function testExpectSrcFromArray(images: ShallowWrapper<HTMLAttributes, any, React.Component<{}, {}, any>>, expectedList: string[]): void {
+function testExpectSrcFromArray(images: ReactWrapper<HTMLAttributes, any, React.Component<{}, {}, any>>, expectedList: string[]): void {
   expect(images).toHaveLength(expectedList.length);
   for (let i = 0; i < expectedList.length; i++) {
     expect(images.at(i).props().src).toBe(expectedList[i]);

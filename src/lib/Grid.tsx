@@ -185,7 +185,7 @@ const Grid = (props: any): JSX.Element => {
     }
   };
 
-  const getSortIcons = (name: Primitive) => {
+  const GetSortIcons = ({name}: {name: Primitive}) => {
     if (!props.sort) {
       return <></>;
     } else if (!grid.sort || grid.sort.name !== name || grid.sort.type === Sort.Both) {
@@ -303,8 +303,7 @@ const Grid = (props: any): JSX.Element => {
             {grid.headers.map((header: Primitive, i: number) =>
               <DivHeaderCell key={String(header)} width={getWidthFromIndex(i)}>
                 <div>{header}</div>
-                {getSortIcons(header)}
-                {/* <GetSortIcons name={header} /> */}
+                <GetSortIcons name={header} />
               </DivHeaderCell>,
             )}
           </GridHeader> :
@@ -321,8 +320,7 @@ const Grid = (props: any): JSX.Element => {
                 (header[1] as Primitive[]).map((cell: Primitive, j: number) =>
                   <DivHeaderCell key={cell + '_' + i + '_' + j} width={getWidthFromIndex(getIndexFromTopHeader(i, j))}>
                     <div>{cell}</div>
-                    {getSortIcons(cell)}
-                    {/* <GetSortIcons name={cell}/> */}
+                    <GetSortIcons name={cell}/>
                   </DivHeaderCell>,
                 ))
               }
